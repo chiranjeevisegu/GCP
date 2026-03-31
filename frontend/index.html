@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Agent Productivity Assistant | MCP + Gemini + Tavily</title>
+  <meta name="description" content="AI-powered multi-agent productivity assistant using Model Context Protocol (MCP), Google Gemini, and Tavily search for research, writing, summarization, and task planning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon"><i data-lucide="zap" width="24" height="24"></i></div>
+        <div class="logo-text">
+          <span class="logo-title">AgentFlow</span>
+          <span class="logo-sub">Multi-Agent Productivity Assistant</span>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-mcp">MCP</span>
+        <span class="badge badge-gemini">Gemini 1.5</span>
+        <span class="badge badge-tavily">Tavily</span>
+        <div class="status-dot" id="serverStatus" title="Server Status"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-tag">🏆 GenAI APAC Hackathon · Multi-Agent Productivity Track</div>
+        <h1 class="hero-title">
+          Your AI Team,<br />
+          <span class="gradient-text">On Demand</span>
+        </h1>
+        <p class="hero-desc">
+          An orchestrated team of specialist AI agents — Research, Writing, Summarization, and Task Planning — working together via the <strong>Model Context Protocol (MCP)</strong>.
+        </p>
+      </div>
+
+      <!-- Agent Cards -->
+      <div class="agents-grid" id="agentsGrid">
+        <div class="agent-card" id="agent-orchestrator" data-agent="orchestrator">
+          <div class="agent-icon"><i data-lucide="brain" width="24" height="24" style="color:var(--text-secondary)"></i></div>
+          <div class="agent-info">
+            <div class="agent-name">Orchestrator</div>
+            <div class="agent-role">Gemini · Routing</div>
+          </div>
+          <div class="agent-status-pill ready">Ready</div>
+        </div>
+        <div class="agent-card" id="agent-research" data-agent="web_search">
+          <div class="agent-icon"><i data-lucide="search" width="24" height="24" style="color:var(--text-secondary)"></i></div>
+          <div class="agent-info">
+            <div class="agent-name">Research</div>
+            <div class="agent-role">Tavily · Web Search</div>
+          </div>
+          <div class="agent-status-pill ready">Ready</div>
+        </div>
+        <div class="agent-card" id="agent-writer" data-agent="write_content">
+          <div class="agent-icon"><i data-lucide="pen-tool" width="24" height="24" style="color:var(--text-secondary)"></i></div>
+          <div class="agent-info">
+            <div class="agent-name">Writer</div>
+            <div class="agent-role">Gemini · Content</div>
+          </div>
+          <div class="agent-status-pill ready">Ready</div>
+        </div>
+        <div class="agent-card" id="agent-summary" data-agent="summarize_text">
+          <div class="agent-icon"><i data-lucide="file-text" width="24" height="24" style="color:var(--text-secondary)"></i></div>
+          <div class="agent-info">
+            <div class="agent-name">Summarizer</div>
+            <div class="agent-role">Gemini · Insights</div>
+          </div>
+          <div class="agent-status-pill ready">Ready</div>
+        </div>
+        <div class="agent-card" id="agent-task" data-agent="create_task_plan">
+          <div class="agent-icon"><i data-lucide="calendar" width="24" height="24" style="color:var(--text-secondary)"></i></div>
+          <div class="agent-info">
+            <div class="agent-name">Task Planner</div>
+            <div class="agent-role">Gemini · Roadmaps</div>
+          </div>
+          <div class="agent-status-pill ready">Ready</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo Queries -->
+    <section class="demo-section">
+      <h2 class="section-title"><i data-lucide="zap" width="20" height="20" style="display:inline-block;vertical-align:-3px;margin-right:8px;color:var(--accent-amber)"></i> Quick Demo Queries</h2>
+      <div class="demo-grid" id="demoGrid">
+        <button class="demo-btn skeleton" disabled>Loading...</button>
+        <button class="demo-btn skeleton" disabled>Loading...</button>
+        <button class="demo-btn skeleton" disabled>Loading...</button>
+        <button class="demo-btn skeleton" disabled>Loading...</button>
+        <button class="demo-btn skeleton" disabled>Loading...</button>
+      </div>
+    </section>
+
+    <!-- Chat Panel -->
+    <section class="chat-section">
+      <div class="chat-container">
+        <!-- Activity Feed -->
+        <div class="activity-panel">
+          <div class="panel-header">
+            <span style="display:flex;align-items:center;gap:6px;"><i data-lucide="activity" width="16" height="16" style="color:var(--text-secondary)"></i> MCP Activity Feed</span>
+            <span class="panel-hint">Live agent communication</span>
+          </div>
+          <div class="activity-feed" id="activityFeed">
+            <div class="activity-placeholder">
+              <div class="placeholder-icon"><i data-lucide="moon" width="32" height="32"></i></div>
+              <div>Awaiting your request...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input + Result -->
+        <div class="chat-main">
+          <div class="chat-input-area">
+            <textarea
+              id="chatInput"
+              class="chat-textarea"
+              placeholder="Ask anything... e.g. 'Research AI trends and create a 2-week adoption plan'"
+              rows="3"
+            ></textarea>
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+              <span id="sendBtnText">Send →</span>
+              <div class="send-spinner hidden" id="sendSpinner"></div>
+            </button>
+          </div>
+
+          <!-- Result Display -->
+          <div class="result-area" id="resultArea">
+            <div class="result-placeholder">
+              <div class="placeholder-graphic">
+                <i data-lucide="bot" width="48" height="48" style="color:var(--accent-purple)"></i>
+              </div>
+              <p>Your AI team is standing by. Ask a question or click a demo query above.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture diagram -->
+    <section class="arch-section">
+      <h2 class="section-title"><i data-lucide="settings" width="20" height="20" style="display:inline-block;vertical-align:-3px;margin-right:8px;color:var(--text-secondary)"></i> MCP Architecture</h2>
+      <div class="arch-diagram">
+        <div class="arch-node user-node">
+          <div class="node-icon"><i data-lucide="user" width="20" height="20"></i></div>
+          <div class="node-label">User</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node server-node">
+          <div class="node-icon"><i data-lucide="server" width="20" height="20"></i></div>
+          <div class="node-label">Express Server<br/><small>SSE Stream</small></div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node orchestrator-node">
+          <div class="node-icon"><i data-lucide="brain" width="20" height="20"></i></div>
+          <div class="node-label">Orchestrator<br/><small>Gemini 1.5</small></div>
+        </div>
+        <div class="arch-arrow mcp-arrow">→ MCP →</div>
+        <div class="arch-specialists">
+          <div class="arch-node specialist-node" style="display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="search" width="14" height="14"></i> Research</div>
+          <div class="arch-node specialist-node" style="display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="pen-tool" width="14" height="14"></i> Writer</div>
+          <div class="arch-node specialist-node" style="display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="file-text" width="14" height="14"></i> Summary</div>
+          <div class="arch-node specialist-node" style="display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="calendar" width="14" height="14"></i> Planner</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div>Built for <strong>GenAI APAC Hackathon</strong> · Multi-Agent Productivity Track</div>
+    <div class="footer-stack">Gemini 1.5 Flash · Tavily Search · MCP Protocol · Node.js · Express</div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="app.js"></script>
+</body>
+</html>
